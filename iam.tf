@@ -79,8 +79,15 @@ resource "aws_iam_policy" "lambda_clean_rules_sg_alter_policy" {
     "Statement": [{
         "Effect": "Allow",
         "Action": [
-            "ec2:RevokeSecurityGroupIngress",
             "ec2:DescribeSecurityGroups"
+        ],
+        "Resource": [
+            "arn:aws:ec2:${var.region}:${data.aws_caller_identity.current.account_id}:security-group/*"
+        ]
+    }, {
+        "Effect": "Allow",
+        "Action": [
+            "ec2:RevokeSecurityGroupIngress"
         ],
         "Resource": [
             "arn:aws:ec2:${var.region}:${data.aws_caller_identity.current.account_id}:security-group/${var.security_group_id}"
