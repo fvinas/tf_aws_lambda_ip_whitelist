@@ -28,9 +28,8 @@ def lambda_handler(event, context):
     ec2_client = boto3.client('ec2', region_name=REGION)
 
     logger.debug('Event: {}'.format(event))
-    logger.debug('Context: {}'.format(context))
 
-    user = context['identity']['user']
+    user = event['user']
     ip_address = event['ip']
     to_port = int(event['to_port'])
     from_port = int(event['from_port'])
