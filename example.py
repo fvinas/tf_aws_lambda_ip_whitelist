@@ -10,8 +10,8 @@ import base64
 import boto3
 
 
-FUNCTION_NAME = 'TF_AWS_LAMBDA_IP_WHITELIST-ip-whitelisting-lambda-add-rule'
-REGION = 'us-east-1'
+FUNCTION_NAME = 'PROD-UAT-DataProduction-ip-whitelisting-lambda-add-rule'
+REGION = 'eu-central-1'
 
 
 def main():
