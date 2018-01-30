@@ -31,6 +31,22 @@ resource "aws_lambda_function" "lambda_add_rule" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_add_rule_invocation_from_api" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["apigateway.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "lambda_add_rule_invocation_role" {
+  name               = "${format("%s-API-GATEWAY-ROLE", var.name)}"
+  assume_role_policy = "${data.aws_iam_policy_document.lambda_add_rule_invocation_from_api.json}"
+}
+
 data "archive_file" "lambda_clean_rules_zip" {
   type        = "zip"
   source_dir  = "${path.module}/src"
