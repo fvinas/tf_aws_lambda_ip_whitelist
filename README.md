@@ -16,10 +16,13 @@ This module will provision two lambda functions:
 
 A common use case this two-fold lambda mechanism allows you to run is a "deny by default" SSH or HTTPS access policy, where you temporarily register your origin IP address in the SG via a lambda function.
 
+Feel free to fork and file a PR to fit it with your needs (UDP…)
+
 ## Inputs
 
   * `region` - AWS region code (required)
   * `security_group_id` - The id of the security group the lambdas will add rules to or remove rules from (required)
+  * `port` - The TCP port(s) on which ingress traffic will be authorized (optional, defaults to `22`, SSH). Can be provided as a single port (e.g. `'22'`), as a list of ports (e.g. `'22;80;443'`) or as a port range (e.g. `'3000-4000'`).
   * `name` - Name to be used as a basename on all the resources identifiers (optional, defaults to `'TF_AWS_LAMBDA_IP_WHITELIST'`)
   * `expiry_duration` - The duration after which a rule will be considered expired (in minutes, optional, defaults to `'1440'`, 1 day)
   * `cleaning_rate` - The rate at which `lambda_clean_rules` will be launched. This is an AWS CloudWatch Events rate expression. (optional, defaults to `'cron(0 0/2 * * ? *)'` - every 2 hours)
@@ -74,9 +77,7 @@ def main():
         LogType='Tail',
         Payload=json.dumps({
             'user': user,
-            'ip': ip_address,
-            'from_port': from_port,
-            'to_port': to_port
+            'ip': ip_address
         })
     )
     if 'FunctionError' in response:
@@ -111,10 +112,12 @@ module "ssh_whitelisting_mechanism" {
 ## Next steps
 
 - displays a success message with the expiry timestamp when adding a rule
+- retrieve public IP inside Lambda func from lambda request
 - remove error in case of duplicate entry (update)
 - support for ipv6 rules
 - support for egress rules
-- support for ports and IPs ranges
+- support for ranges of IPs
+- support for UDP
 
 ## Authors
 

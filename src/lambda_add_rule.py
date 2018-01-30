@@ -20,6 +20,7 @@ import rule
 SECURITY_GROUP_ID = os.environ['SECURITY_GROUP_ID']
 EXPIRY_DURATION = int(os.environ['EXPIRY_DURATION'])
 REGION = os.environ['REGION']
+PORT = os.environ['PORT']
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -32,14 +33,10 @@ def lambda_handler(event, context):
 
     user = event['user']
     ip_address = event['ip']
-    to_port = int(event['to_port'])
-    from_port = int(event['from_port'])
 
     logger.info('Received parameters:')
     logger.info(' - user = {}'.format(user))
     logger.info(' - ip_address = {}'.format(ip_address))
-    logger.info(' - to_port = {}'.format(to_port))
-    logger.info(' - from_port = {}'.format(from_port))
 
     rule_description = rule.build_rule_description(user, EXPIRY_DURATION)
 
@@ -49,17 +46,18 @@ def lambda_handler(event, context):
 
     logger.info('Authorizing SG ingress…')
 
+    ip_permission_template = {
+        'IpProtocol': 'tcp',
+        'IpRanges': [{
+            'CidrIp': cidr_ip,
+            'Description': rule_description
+        }]
+    }
+    ip_permissions = rule.generate_ip_permissions(ip_permission_template, PORT)
+
     response = ec2_client.authorize_security_group_ingress(
         GroupId=SECURITY_GROUP_ID,
-        IpPermissions=[{
-            'IpProtocol': 'tcp',
-            'IpRanges': [{
-                'CidrIp': cidr_ip,
-                'Description': rule_description
-            }],
-            'ToPort': to_port,
-            'FromPort': from_port
-        }]
+        IpPermissions=ip_permissions
     )
 
     assert('ResponseMetadata' in response)

@@ -20,8 +20,6 @@ def main():
     # Checks
     user = sys.argv[1]
     ip_address = sys.argv[2]
-    from_port = sys.argv[3]
-    to_port = sys.argv[4]
 
     # Lambda invocation
     response = client.invoke(
@@ -30,9 +28,7 @@ def main():
         LogType='Tail',
         Payload=json.dumps({
             'user': user,
-            'ip': ip_address,
-            'from_port': from_port,
-            'to_port': to_port
+            'ip': ip_address
         })
     )
     if 'FunctionError' in response:

@@ -26,6 +26,7 @@ resource "aws_lambda_function" "lambda_add_rule" {
       SECURITY_GROUP_ID = "${var.security_group_id}"
       EXPIRY_DURATION   = "${var.expiry_duration}"
       REGION            = "${var.region}"
+      PORT              = "${var.port}"
     }
   }
 }

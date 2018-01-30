@@ -6,6 +6,11 @@ variable "security_group_id" {
   description = "ID of the SG the lambda functions will modify"
 }
 
+variable "port" {
+  description = "TCP port (or ports, or range of ports) on which the traffic will be authorized"
+  default     = "22"
+}
+
 variable "name" {
   description = "Name to be used as a basename on all the resources identifiers"
   default     = "TF_AWS_LAMBDA_IP_WHITELIST"
