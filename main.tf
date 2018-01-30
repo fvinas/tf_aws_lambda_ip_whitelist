@@ -7,7 +7,7 @@ data "archive_file" "lambda_add_rule_zip" {
 
 resource "aws_lambda_function" "lambda_add_rule" {
   filename         = "lambda_add_rule.zip"
-  source_code_hash = "${archive_file.lambda_add_rule_zip.output_base64sha256}"
+  source_code_hash = "${data.archive_file.lambda_add_rule_zip.output_base64sha256}"
   function_name    = "${format("%s-lambda-add-rule" ,var.name)}"
   role             = "${aws_iam_role.lambda_add_rule_role.arn}"
   description      = "A lambda function to add a temporary whitelist rule to a SG."
@@ -34,7 +34,7 @@ data "archive_file" "lambda_clean_rules_zip" {
 
 resource "aws_lambda_function" "lambda_clean_rules" {
   filename         = "lambda_clean_rules.zip"
-  source_code_hash = "${archive_file.lambda_clean_rules_zip.output_base64sha256}"
+  source_code_hash = "${data.archive_file.lambda_clean_rules_zip.output_base64sha256}"
   function_name    = "${format("%s-lambda-clean-rules" ,var.name)}"
   role             = "${aws_iam_role.lambda_clean_rules_role.arn}"
   description      = "A lambda function to clean expired rules from a SG."
@@ -50,3 +50,6 @@ resource "aws_lambda_function" "lambda_clean_rules" {
     }
   }
 }
+
+# TODO: add CloudWatch Event & scheduling
+
