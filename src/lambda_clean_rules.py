@@ -18,8 +18,8 @@ import boto3
 import rule
 
 
-SECURITY_GROUP_ID = os.getenv['SECURITY_GROUP_ID']
-REGION = os.getenv['REGION']
+SECURITY_GROUP_ID = os.environ['SECURITY_GROUP_ID']
+REGION = os.environ['REGION']
 
 logger = logging.getLogger(__name__)
 

@@ -17,9 +17,9 @@ import boto3
 import rule
 
 
-SECURITY_GROUP_ID = os.getenv['SECURITY_GROUP_ID']
-EXPIRY_DURATION = int(os.getenv['EXPIRY_DURATION'])
-REGION = os.getenv['REGION']
+SECURITY_GROUP_ID = os.environ['SECURITY_GROUP_ID']
+EXPIRY_DURATION = int(os.environ['EXPIRY_DURATION'])
+REGION = os.environ['REGION']
 
 logger = logging.getLogger(__name__)
 
