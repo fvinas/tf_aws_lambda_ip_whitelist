@@ -1,7 +1,7 @@
 data "archive_file" "lambda_add_rule_zip" {
   type        = "zip"
-  source_file = "lambda_add_rule.py"
-  source_file = "rule.py"
+  source_file = "${path.module}/lambda_add_rule.py"
+  source_file = "${path.module}/lule.py"
   output_path = "lambda_add_rule.zip"
 }
 
@@ -27,8 +27,8 @@ resource "aws_lambda_function" "lambda_add_rule" {
 
 data "archive_file" "lambda_clean_rules_zip" {
   type        = "zip"
-  source_file = "lambda_clean_rules.py"
-  source_file = "rule.py"
+  source_file = "${path.module}/lambda_clean_rules.py"
+  source_file = "${path.module}/rule.py"
   output_path = "lambda_clean_rules.zip"
 }
 
