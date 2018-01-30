@@ -1,20 +1,20 @@
 # tf_aws_lambda_ip_whitelist 
 
-## Module to provide a lambda-based mechanism to temporarily whitelist IP addresses in security groups ingress rules
+## Lambda-based mechanism to temporarily whitelist IP addresses in security groups ingress rules
+
+This Terraform module for AWS allows you to set up a self-managed, temporary, IP whitelisting security policy via security groups and to provide end users with high-level commands to run from where they are (home, hotel, …) to grant a temporary network access to the infrastructure (can be SSH, HTTPS or whatever port), meanwhile keeping the infrastructure secure (access through a whitelist the rest of the time) and automated (rules expiration and cleaning is automated).
+
+```shell
+# Behind the scene, retrieves my public IP address and authorize it for 1 day
+./allow_ip bob
+IP address now authorized! 😀
+```
 
 This module will provision two lambda functions:
 - `lambda_add_rule`, whose role is to add entries in a given security group
 - `lambda_clean_rules`, whose role is to periodically clean expired entries in the security group
 
-A common use case this two-fold lambda mechanism allows you to run is a "deny by default" SSH-access policy, where you temporarily register your origin IP address in the SG via a lambda function.
-
-The end product allows you to set up a self-managed, temporary, IP whitelisting security policy via security groups and provide users with high-level commands to run from where (home, hotel, …) to grant a temporary network access to the infrastructure (can be SSH, HTTP or whatever port).
-
-```shell
-# Behind the scene, will retrieve my public IP address and authorize it for 1 day
-./allow_ip bob
-IP address now authorized! 😀
-```
+A common use case this two-fold lambda mechanism allows you to run is a "deny by default" SSH or HTTPS access policy, where you temporarily register your origin IP address in the SG via a lambda function.
 
 ## Inputs
 
@@ -102,8 +102,9 @@ resource "aws_security_group" "my_sg" {
 }
 
 module "ssh_whitelisting_mechanism" {
-    security_group_id = '${aws_security_group.my_sg.id}'
-    region         = 'us-east-1'
+    source            = "github.com/fvinas/tf_aws_lambda_ip_whitelist"
+    security_group_id = "${aws_security_group.my_sg.id}"
+    region            = "us-east-1"
 }
 ```
 
