@@ -63,7 +63,7 @@ resource "aws_cloudwatch_event_rule" "lambda_clean_rules_event" {
 }
 
 resource "aws_cloudwatch_event_target" "lambda_clean_event_target" {
-  target_id = "${format("%s-lambda-clean-rules-target", var.name)}"
+  target_id = "${format("%s-clean-rules-target", var.name)}"
   rule      = "${aws_cloudwatch_event_rule.lambda_clean_rules_event.name}"
   arn       = "${aws_lambda_function.lambda_clean_rules.arn}"
 }
