@@ -22,6 +22,7 @@ EXPIRY_DURATION = int(os.environ['EXPIRY_DURATION'])
 REGION = os.environ['REGION']
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def lambda_handler(event, context):

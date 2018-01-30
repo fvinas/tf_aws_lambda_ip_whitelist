@@ -22,6 +22,7 @@ SECURITY_GROUP_ID = os.environ['SECURITY_GROUP_ID']
 REGION = os.environ['REGION']
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 def lambda_handler(event, context):
