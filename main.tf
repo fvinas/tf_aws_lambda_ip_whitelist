@@ -31,32 +31,6 @@ resource "aws_lambda_function" "lambda_add_rule" {
   }
 }
 
-resource "aws_lambda_permission" "lambda_add_rule_permission" {
-  statement_id  = "${format("%s-AllowExecutionFromAPIGateway")}"
-  action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.lambda_add_rule.arn}"
-  principal     = "apigateway.amazonaws.com"
-
-  # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${var.region}:${aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.add_rule_api.id}/*/${aws_api_gateway_method.add_rule_api_method.http_method}"
-}
-
-data "aws_iam_policy_document" "lambda_add_rule_invocation_from_api" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["apigateway.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "lambda_add_rule_invocation_role" {
-  name               = "${format("%s-API-GATEWAY-ROLE", var.name)}"
-  assume_role_policy = "${data.aws_iam_policy_document.lambda_add_rule_invocation_from_api.json}"
-}
-
 data "archive_file" "lambda_clean_rules_zip" {
   type        = "zip"
   source_dir  = "${path.module}/src"

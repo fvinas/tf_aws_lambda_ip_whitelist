@@ -31,8 +31,6 @@ Feel free to fork and file a PR to fit it with your needs (UDP…)
 
   * `lambda_add_rule.arn`: ARN of the entry-point Lambda, so that you provide the rights accordingly to the users allowed to run it.
 
-  * `lambda_add_rule_api_endpoint`: HTTPS endpoint for the API Gateway proxying the `lambda_add_rule` invocation.
-
 ## Usage
 
 ### Shell script, client side
@@ -115,7 +113,7 @@ module "ssh_whitelisting_mechanism" {
 
 - displays a success message with the expiry timestamp when adding a rule
 - support for non IAM users
-- retrieve public IP inside Lambda func from lambda request
+- integrate Lambda behind an API Gateway
 - remove error in case of duplicate entry (update)
 - support for ipv6 rules
 - support for egress rules
