@@ -42,7 +42,7 @@ resource "aws_iam_policy" "lambda_add_rule_sg_alter_policy" {
             "ec2:AuthorizeSecurityGroupIngress"
         ],
         "Resource": [
-            "${var.security_group_arn}"
+            "${var.security_group_id}"
         ]
     }]
 }
@@ -83,7 +83,7 @@ resource "aws_iam_policy" "lambda_clean_rules_sg_alter_policy" {
             "ec2:DescribeSecurityGroups"
         ],
         "Resource": [
-            "${var.security_group_arn}"
+            "${var.security_group_id}"
         ]
     }]
 }

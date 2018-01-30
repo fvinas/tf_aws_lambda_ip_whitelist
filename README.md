@@ -11,7 +11,7 @@ A common use case this two-fold lambda mechanism allows you to run is a "deny by
 ## Inputs
 
   * `region` - AWS region code (required)
-  * `security_group_arn` - The ARN of the security group the lambdas will add rules to or remove rules from (required)
+  * `security_group_id` - The id of the security group the lambdas will add rules to or remove rules from (required)
   * `name` - Name to be used as a basename on all the resources identifiers (optional, defaults to `'TF_AWS_LAMBDA_IP_WHITELIST'`)
   * `expiry_duration` - The duration after which a rule will be considered expired (in minutes, optional, defaults to `'1440'`, 1 day)
   * `cleaning_rate` - The rate at which `lambda_clean_rules` will be launched. This is an AWS CloudWatch Events rate expression. (optional, defaults to `'cron(0 0/2 * * ? *)'` - every 2 hours)
@@ -37,7 +37,7 @@ resource "aws_security_group" "my_sg" {
 }
 
 module "ssh_whitelisting_mechanism" {
-    security_group = '${aws_security_group.my_sg.arn}'
+    security_group_id = '${aws_security_group.my_sg.id}'
     region         = 'us-east-1'
 }
 ```
