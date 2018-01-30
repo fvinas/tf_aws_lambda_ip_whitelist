@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 data "archive_file" "lambda_add_rule_zip" {
   type        = "zip"
   source_file = "${path.module}/lambda_add_rule.py"
