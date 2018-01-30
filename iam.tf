@@ -82,7 +82,7 @@ resource "aws_iam_policy" "lambda_clean_rules_sg_alter_policy" {
             "ec2:DescribeSecurityGroups"
         ],
         "Resource": [
-            "arn:aws:ec2:${var.region}:${data.aws_caller_identity.current.account_id}:security-group/*"
+            "*"
         ]
     }, {
         "Effect": "Allow",
