@@ -24,7 +24,64 @@ A common use case this two-fold lambda mechanism allows you to run is a "deny by
 
 ### Shell script, client side
 
-TODO
+This is an example of script that you may set up and provide to your users for them to have a way to whitelist their current IP address.
+
+It can be called, for instance, via:
+
+```shell
+~ ./example.py Bob $(curl -s http://checkip.amazonaws.com/) 22 22
+```
+
+```python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# System
+import sys
+import json
+import base64
+
+# Third party
+import boto3
+
+
+# Customize to fit your needs
+FUNCTION_NAME = '-ip-whitelisting-lambda-add-rule'
+REGION = 'us-east-1'
+
+
+def main():
+    client = boto3.client('lambda', region_name=REGION)
+
+    # Checks
+    user = sys.argv[1]
+    ip_address = sys.argv[2]
+    from_port = sys.argv[3]
+    to_port = sys.argv[4]
+
+    # Lambda invocation
+    response = client.invoke(
+        FunctionName=FUNCTION_NAME,
+        InvocationType='RequestResponse',
+        LogType='Tail',
+        Payload=json.dumps({
+            'user': user,
+            'ip': ip_address,
+            'from_port': from_port,
+            'to_port': to_port
+        })
+    )
+    if 'FunctionError' in response:
+        print('Error while authorizing the IP address 🙁')
+        print(base64.b64decode(response['LogResult']))
+    else:
+        print('IP address successfully added! 😀')
+
+
+if __name__ == '__main__':
+    main()
+
+```
 
 ### Terraform code, infrastructure definition side
 
@@ -44,10 +101,10 @@ module "ssh_whitelisting_mechanism" {
 
 ## Next steps
 
+- remove error in case of duplicate entry (update)
 - support for ipv6 rules
 - support for egress rules
-- support for port and IP ranges
-- update of existing rules instead of merely stacking them
+- support for ports and IPs ranges
 
 ## Authors
 
