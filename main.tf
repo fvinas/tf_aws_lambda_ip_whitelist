@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 data "archive_file" "lambda_add_rule_zip" {
   type        = "zip"
   source_file = "${path.module}/lambda_add_rule.py"
-  source_file = "${path.module}/lule.py"
+  source_file = "${path.module}/rule.py"
   output_path = "lambda_add_rule.zip"
 }
 
