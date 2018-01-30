@@ -39,7 +39,7 @@ def main():
         print('Error while authorizing the IP address 🙁')
         print(base64.b64decode(response['LogResult']))
     else:
-        print('IP address successfully added! 😀')
+        print('IP address now authorized! 😀')
 
 
 if __name__ == '__main__':

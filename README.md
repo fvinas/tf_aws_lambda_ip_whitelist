@@ -8,6 +8,14 @@ This module will provision two lambda functions:
 
 A common use case this two-fold lambda mechanism allows you to run is a "deny by default" SSH-access policy, where you temporarily register your origin IP address in the SG via a lambda function.
 
+The end product allows you to set up a self-managed, temporary, IP whitelisting security policy via security groups and provide users with high-level commands to run from where (home, hotel, …) to grant a temporary network access to the infrastructure (can be SSH, HTTP or whatever port).
+
+```shell
+# Behind the scene, will retrieve my public IP address and authorize it for 1 day
+./allow_ip bob
+IP address now authorized! 😀
+```
+
 ## Inputs
 
   * `region` - AWS region code (required)
@@ -29,7 +37,7 @@ This is an example of script that you may set up and provide to your users for t
 It can be called, for instance, via:
 
 ```shell
-~ ./example.py Bob $(curl -s http://checkip.amazonaws.com/) 22 22
+./example.py Bob $(curl -s http://checkip.amazonaws.com/) 22 22
 ```
 
 ```python
@@ -75,7 +83,7 @@ def main():
         print('Error while authorizing the IP address 🙁')
         print(base64.b64decode(response['LogResult']))
     else:
-        print('IP address successfully added! 😀')
+        print('IP address now authorized! 😀')
 
 
 if __name__ == '__main__':
@@ -101,6 +109,7 @@ module "ssh_whitelisting_mechanism" {
 
 ## Next steps
 
+- displays a success message with the expiry timestamp when adding a rule
 - remove error in case of duplicate entry (update)
 - support for ipv6 rules
 - support for egress rules
