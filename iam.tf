@@ -39,7 +39,16 @@ resource "aws_iam_policy" "lambda_add_rule_sg_alter_policy" {
     "Statement": [{
         "Effect": "Allow",
         "Action": [
-            "ec2:AuthorizeSecurityGroupIngress"
+            "ec2:DescribeSecurityGroups"
+        ],
+        "Resource": [
+            "*"
+        ]
+    }, {
+        "Effect": "Allow",
+        "Action": [
+            "ec2:AuthorizeSecurityGroupIngress",
+            "ec2:RevokeSecurityGroupIngress"
         ],
         "Resource": [
             "arn:aws:ec2:${var.region}:${data.aws_caller_identity.current.account_id}:security-group/${var.security_group_id}"

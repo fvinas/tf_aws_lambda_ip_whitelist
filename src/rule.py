@@ -59,8 +59,8 @@ def generate_ip_permissions(ip_permission_template, port_rule):
         # Sequence of ports
         parts = port_rule.split(';')
         permissions = []
-        for p in parts:
-            permissions.append(generate_ip_permissions(ip_permission_template, p)[0])
+        for part in parts:
+            permissions.append(generate_ip_permissions(ip_permission_template, part)[0])
         return permissions
 
     elif '-' in port_rule:

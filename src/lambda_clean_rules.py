@@ -26,6 +26,9 @@ logger.setLevel(logging.DEBUG)
 
 
 def lambda_handler(event, context):
+    """Entry point for the lambda function."""
+    # pylint: disable=locally-disabled, unused-argument, too-many-locals
+
     ec2 = boto3.resource('ec2', region_name=REGION)
     ec2_client = boto3.client('ec2', region_name=REGION)
 
@@ -36,20 +39,20 @@ def lambda_handler(event, context):
     # Iterating through all the rules, only keeping those with a matching description
     nb_rules = 0
     nb_expired = 0
-    for p in ingress_permissions:
-        from_port = p['FromPort']
-        to_port = p['ToPort']
-        protocol = p['IpProtocol']
+    for ingress_permission in ingress_permissions:
+        from_port = ingress_permission['FromPort']
+        to_port = ingress_permission['ToPort']
+        protocol = ingress_permission['IpProtocol']
 
-        for r in p['IpRanges']:
+        for ip_range in ingress_permission['IpRanges']:
             # Only rules with a description
-            if 'Description' in r:
-                description = r['Description']
-                ip_range = r['CidrIp']
+            if 'Description' in ip_range:
+                description = ip_range['Description']
+                cidr_range = ip_range['CidrIp']
                 # Preferably a description labeled by the module
                 if rule.match_rule_description(description):
                     nb_rules += 1
-                    rule_user, rule_timestamp = rule.parse_rule_description(description)
+                    _, rule_timestamp = rule.parse_rule_description(description)
                     logger.info('Examining rule {}'.format(description))
                     if rule.is_rule_expired(rule_timestamp):
                         logger.info('Rule is expired: removing it.')
@@ -57,7 +60,7 @@ def lambda_handler(event, context):
                         ec2_client.revoke_security_group_ingress(
                             GroupId=SECURITY_GROUP_ID,
                             FromPort=from_port,
-                            CidrIp=ip_range,
+                            CidrIp=cidr_range,
                             IpProtocol=protocol,
                             ToPort=to_port
                         )
@@ -66,7 +69,6 @@ def lambda_handler(event, context):
                     else:
                         # Rule is not expired, keep it
                         logger.info('Rule is not expired, keeping it.')
-                        pass
 
     logger.info('{nb} rules were examined, thereof {nb_expired} were expired and removed'.format(
         nb=nb_rules,
