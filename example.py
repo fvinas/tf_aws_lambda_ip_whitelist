@@ -5,21 +5,28 @@
 import sys
 import json
 import base64
+import requests
 
 # Third party
 import boto3
 
+FUNCTION_NAME = 'TF_AWS_LAMBDA_IP_WHITELIST-ip-whitelisting-lambda-add-rule'
+REGION = 'us-east-1'
 
-FUNCTION_NAME = 'PROD-UAT-DataProduction-ip-whitelisting-lambda-add-rule'
-REGION = 'eu-central-1'
+
+def get_public_ip():
+    """Helper to retrieve current public IP address."""
+    AMAZON_CHECKIP_URL = 'http://checkip.amazonaws.com/'
+
+    response = requests.get(AMAZON_CHECKIP_URL)
+    response.raise_for_status()
+    return response.content.strip()
 
 
 def main():
     client = boto3.client('lambda', region_name=REGION)
 
-    # Checks
     user = sys.argv[1]
-    ip_address = sys.argv[2]
 
     # Lambda invocation
     response = client.invoke(
@@ -28,7 +35,7 @@ def main():
         LogType='Tail',
         Payload=json.dumps({
             'user': user,
-            'ip': ip_address
+            'ip': get_public_ip()
         })
     )
     if 'FunctionError' in response:
@@ -36,6 +43,7 @@ def main():
         print(base64.b64decode(response['LogResult']))
     else:
         print('IP address now authorized! 😀')
+        print(base64.b64decode(response['LogResult']))
 
 
 if __name__ == '__main__':

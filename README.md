@@ -5,7 +5,7 @@
 This Terraform module for AWS allows you to set up a self-managed, temporary, IP whitelisting security policy via security groups and to provide end users with high-level commands to run from where they are (home, hotel, …) to grant a temporary network access to the infrastructure (can be SSH, HTTPS or whatever port), meanwhile keeping the infrastructure secure (access through a whitelist the rest of the time) and automated (rules expiration and cleaning is automated).
 
 ```shell
-# Behind the scene, retrieves my public IP address and authorize it for 1 day
+# Retrieves my public IP address and authorizes it for 1 day on the selected target IP & ports
 ./allow_ip bob
 IP address now authorized! 😀
 ```
@@ -40,7 +40,7 @@ This is an example of script that you may set up and provide to your users for t
 It can be called, for instance, via:
 
 ```shell
-./example.py Bob $(curl -s http://checkip.amazonaws.com/) 22 22
+./example.py Bob
 ```
 
 ```python
@@ -51,24 +51,28 @@ It can be called, for instance, via:
 import sys
 import json
 import base64
+import requests
 
 # Third party
 import boto3
 
-
-# Customize to fit your needs
-FUNCTION_NAME = '-ip-whitelisting-lambda-add-rule'
+FUNCTION_NAME = 'TF_AWS_LAMBDA_IP_WHITELIST-ip-whitelisting-lambda-add-rule'
 REGION = 'us-east-1'
+
+
+def get_public_ip():
+    """Helper to retrieve current public IP address."""
+    AMAZON_CHECKIP_URL = 'http://checkip.amazonaws.com/'
+
+    response = requests.get(AMAZON_CHECKIP_URL)
+    response.raise_for_status()
+    return response.content.strip()
 
 
 def main():
     client = boto3.client('lambda', region_name=REGION)
 
-    # Checks
     user = sys.argv[1]
-    ip_address = sys.argv[2]
-    from_port = sys.argv[3]
-    to_port = sys.argv[4]
 
     # Lambda invocation
     response = client.invoke(
@@ -77,7 +81,7 @@ def main():
         LogType='Tail',
         Payload=json.dumps({
             'user': user,
-            'ip': ip_address
+            'ip': get_public_ip()
         })
     )
     if 'FunctionError' in response:
@@ -85,6 +89,7 @@ def main():
         print(base64.b64decode(response['LogResult']))
     else:
         print('IP address now authorized! 😀')
+        print(base64.b64decode(response['LogResult']))
 
 
 if __name__ == '__main__':
