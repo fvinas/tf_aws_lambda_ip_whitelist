@@ -117,12 +117,9 @@ module "ssh_whitelisting_mechanism" {
 ## Next steps
 
 - create a SG directly the module (but adds complexity in the input parameters: VPC, etc.)
-- displays a success message with the expiry timestamp when adding a rule
 - support for non IAM users
 - integrate Lambda behind an API Gateway
-- remove error in case of duplicate entry (update)
 - support for ipv6 rules
-- support for egress rules
 - support for ranges of IPs
 - support for UDP
 
