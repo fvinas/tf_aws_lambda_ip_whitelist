@@ -112,6 +112,29 @@ module "ssh_whitelisting_mechanism" {
     security_group_id = "${aws_security_group.my_sg.id}"
     region            = "us-east-1"
 }
+
+resource "aws_iam_policy" "whitelisting_lambda_policy" {
+  name        = "WhitelistingLambdaPolicy"
+  path        = "/"
+  description = "Allow users to invoke the whitelisting lambda function."
+
+  policy = <<EOF_POLICY
+{
+     "Version": "2012-10-17",
+     "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+              "lambda:Invoke"
+            ],
+            "Resource": [
+                "${module.ssh_whitelisting_mechanism.lambda_add_rule_arn}"
+            ]
+        }
+      ]
+}
+EOF_POLICY
+}
 ```
 
 ## Next steps
