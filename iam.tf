@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "lambda_assume_role" {
 # -------------------------------------------------------------------
 
 resource "aws_iam_role" "lambda_add_rule_role" {
-  name               = "${format("%s-lambda-add-rule-role" ,var.name)}"
+  name               = "${format("%s-lambda-add-rule-role", var.name)}"
   assume_role_policy = "${data.aws_iam_policy_document.lambda_assume_role.json}"
 }
 
@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "lambda_add_rule_sg_alter_role" {
 }
 
 resource "aws_iam_policy" "lambda_add_rule_sg_alter_policy" {
-  name        = "LambdaAddRule_AlterSG"
+  name        = "${format("%s-lambda-add-rule", var.name)}"
   path        = "/"
   description = "Allow lambda_add_rule to add an ingress rule to a security group"
 
@@ -63,7 +63,7 @@ EOF_POLICY
 # -------------------------------------------------------------------
 
 resource "aws_iam_role" "lambda_clean_rules_role" {
-  name               = "${format("%s-lambda-clean-rules-role" ,var.name)}"
+  name               = "${format("%s-lambda-clean-rules-role", var.name)}"
   assume_role_policy = "${data.aws_iam_policy_document.lambda_assume_role.json}"
 }
 
@@ -78,7 +78,7 @@ resource "aws_iam_role_policy_attachment" "lambda_clean_rules_sg_alter_role" {
 }
 
 resource "aws_iam_policy" "lambda_clean_rules_sg_alter_policy" {
-  name        = "LambdaCleanRules_AlterSG"
+  name        = "${format("%s-lambda-clean-rules", var.name)}"
   path        = "/"
   description = "Allow lambda_clean_rules to remove a ingress rules from a security group"
 
