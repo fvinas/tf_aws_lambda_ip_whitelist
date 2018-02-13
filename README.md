@@ -29,7 +29,8 @@ Feel free to fork and file a PR to fit it with your needs (UDP…)
 
 ## Outputs
 
-  * `lambda_add_rule.arn`: ARN of the entry-point Lambda, so that you provide the rights accordingly to the users allowed to run it.
+  * `lambda_add_rule_arn`: ARN of the entry-point Lambda, so that you provide the rights accordingly to the users allowed to run it.
+  * `lambda_add_rule_function_name`: Name of the entry-point Lambda, that you may use to invoke the function.
 
 ## Usage
 
@@ -110,6 +111,7 @@ resource "aws_security_group" "my_sg" {
 module "ssh_whitelisting_mechanism" {
     source            = "github.com/fvinas/tf_aws_lambda_ip_whitelist"
     security_group_id = "${aws_security_group.my_sg.id}"
+    port              = "22;80;443"
     region            = "us-east-1"
 }
 
